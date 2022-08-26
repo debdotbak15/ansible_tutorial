@@ -1,0 +1,14 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: remove apache package 
+    ansible.builtin.yum:
+      name: "{{ packages }}"
+    vars: 
+      packages:
+      - httpd
+      - httpd-tools
+      state: absent 
