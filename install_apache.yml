@@ -4,17 +4,37 @@
   become: true
   tasks:
 
-  - name: Upgrade all packages
+  - name: Update repo index
     ansible.builtin.yum:
-      name: '*'
-      state: latest
+      update_cache: yes
+    when: ansible_distribution_version == "CentOS"
  
-  - name: install a list of packages with a list variable
+  - name: install apache2 package
     ansible.builtin.yum:
-      name: "{{ packages }}"
-    vars:
-      packages:
-      - httpd
-      - httpd-tools
-         
+      name: httpd
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: add php support for apache
+    ansible.builtin.yum:
+      name: php
+      state: latest
+    when: ansible_distribution == "CentOS"
+
+  - name: Update repo index
+    apt:
+      update_cache: yes
+    when: ansible_distribution_version == "Ubuntu"
+
+  - name: install apache2 package
+    apt:
+      name: apache2
+      state: absent
+    when: ansible_distribution == "Ubuntu"
+
+  - name: add php support for apache
+    apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution == "Ubuntu"  
 
